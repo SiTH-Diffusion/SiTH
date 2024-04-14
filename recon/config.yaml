@@ -1,0 +1,53 @@
+global:
+  save_root: './checkpoints'
+  exp_name: 'test-sith'
+
+dataset:
+  data_root: ''
+  img_size: 1024
+  num_samples: 20480
+
+optimizer:
+  lr_decoder: 0.001
+  lr_encoder: 0.0001
+  beta1: 0.5
+  beta2: 0.999
+
+train:
+  epochs: 5000
+  batch_size: 8
+  workers: 8
+  save_every: 50
+  log_every: 100
+
+network:
+  pos_dim: 8
+  num_layers: 5
+  hidden_dim: 512
+  skip:
+    - 2
+    - 3
+    - 4
+  activation: 'lrelu'
+  layer_type: 'none'
+
+
+embedder:
+  shape_freq: 0
+  color_freq: 0
+
+
+losses:
+  lambda_sdf: 100.
+  lambda_rgb: 10.
+  lambda_nrm: 10.
+
+validation:
+  valid_every: 50
+  subdivide: True
+  grid_size: 512
+  erode_iter: 1
+
+wandb:
+  wandb: False
+  wandb_name: 'SiTH'

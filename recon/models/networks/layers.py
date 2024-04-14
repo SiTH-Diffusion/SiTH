@@ -1,0 +1,123 @@
+# The code is adapted from https://github.com/NVIDIAGameWorks/kaolin-wisp/blob/main/wisp/models/layers.py
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+def normalize_frobenius(x):
+    """Normalizes the matrix according to the Frobenius norm.
+
+    Args:
+        x (torch.FloatTensor): A matrix.
+
+    Returns:
+        (torch.FloatTensor): A normalized matrix.
+    """
+    norm = torch.sqrt((torch.abs(x)**2).sum())
+    return x / norm
+
+def normalize_L_1(x):
+    """Normalizes the matrix according to the L1 norm.
+
+    Args:
+        x (torch.FloatTensor): A matrix.
+
+    Returns:
+        (torch.FloatTensor): A normalized matrix.
+    """
+    abscolsum = torch.sum(torch.abs(x), dim=0)
+    abscolsum = torch.min(torch.stack([1.0/abscolsum, torch.ones_like(abscolsum)], dim=0), dim=0)[0]
+    return x * abscolsum[None,:]
+
+def normalize_L_inf(x):    
+    """Normalizes the matrix according to the Linf norm.
+
+    Args:
+        x (torch.FloatTensor): A matrix.
+
+    Returns:
+        (torch.FloatTensor): A normalized matrix.
+    """
+    absrowsum = torch.sum(torch.abs(x), axis=1)
+    absrowsum = torch.min(torch.stack([1.0/absrowsum, torch.ones_like(absrowsum)], dim=0), dim=0)[0]
+    return x * absrowsum[:,None]
+
+class FrobeniusLinear(nn.Module):
+    """A standard Linear layer which applies a Frobenius normalization in the forward pass.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.linear = nn.Linear(*args, **kwargs)
+
+    def forward(self, x):
+        weight = normalize_frobenius(self.linear.weight)
+        return F.linear(x, weight, self.linear.bias)
+
+class L_1_Linear(nn.Module):
+    """A standard Linear layer which applies a L1 normalization in the forward pass.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.linear = nn.Linear(*args, **kwargs)
+
+    def forward(self, x):
+        weight = normalize_L_1(self.linear.weight)
+        return F.linear(x, weight, self.linear.bias)
+
+class L_inf_Linear(nn.Module):
+    """A standard Linear layer which applies a Linf normalization in the forward pass.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.linear = nn.Linear(*args, **kwargs)
+
+    def forward(self, x):
+        weight = normalize_L_inf(self.linear.weight)
+        return F.linear(x, weight, self.linear.bias)
+        
+def spectral_norm_(*args, **kwargs):
+    """Initializes a spectral norm layer.
+    """
+    return nn.utils.spectral_norm(nn.Linear(*args, **kwargs))
+
+def get_layer_class(layer_type):
+    """Convenience function to return the layer class name from text.
+
+    Args:
+        layer_type (str): Text name for the layer.
+
+    Retunrs:
+        (nn.Module): The layer to be used for the decoder.
+    """
+    if layer_type == 'none':
+        return nn.Linear
+    elif layer_type == 'spectral_norm':
+        return spectral_norm_
+    elif layer_type == 'frobenius_norm':
+        return FrobeniusLinear
+    elif layer_type == "l_1_norm":
+        return L_1_Linear
+    elif layer_type == "l_inf_norm":
+        return L_inf_Linear
+    else:
+        assert(False and "layer type does not exist")
+
+def get_activation_class(activation_type):
+    """Utility function to return an activation function class based on the string description.
+
+    Args:
+        activation_type (str): The name for the activation function.
+    
+    Returns:
+        (Function): The activation function to be used. 
+    """
+    if activation_type == 'relu':
+        return torch.relu
+    elif activation_type == 'sin':
+        return torch.sin
+    elif activation_type == 'softplus':
+        return torch.nn.functional.softplus
+    elif activation_type == 'lrelu':
+        return torch.nn.functional.leaky_relu
+    else:
+        assert False and "activation type does not exist"
