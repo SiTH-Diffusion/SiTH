@@ -141,13 +141,13 @@ Note that we trained our models with 526 human scans provided in the [THuman2.0]
 | Methods | P-to-S (cm) ↓ | S-to-P (cm) ↓ | NC ↑ | f-Score ↑ |
 | ------  | :----:  | :-----: | :----: | :----: |
 | PIFu [[Saito2019]](https://github.com/shunsukesaito/PIFu)   | 2.209 |  2.582  |  0.805  | 34.881 |
-| PIFuHD[[Saito2020]](https://github.com/facebookresearch/pifuhd)  | 2.107 |  ++2.228++  |  0.804  | **39.076** |
-| PaMIR [[Zheng2021]](https://github.com/ZhengZerong/PaMIR)  | 2.181 |  2.507 | ++0.813++ | 35.847 |
-| FOF [[Feng2022]](https://github.com/fengq1a0/FOF)   | ++2.079++ | 2.644 | 0.808 | 36.013 |
+| PIFuHD[[Saito2020]](https://github.com/facebookresearch/pifuhd)  | 2.107 |  <ins>2.228</ins>  |  0.804  | **39.076** |
+| PaMIR [[Zheng2021]](https://github.com/ZhengZerong/PaMIR)  | 2.181 |  2.507 | <ins>0.813</ins> | 35.847 |
+| FOF [[Feng2022]](https://github.com/fengq1a0/FOF)   | <ins>2.079</ins> | 2.644 | 0.808 | 36.013 |
 | 2K2K [[Han2023]](https://github.com/SangHunHan92/2K2K) | 2.488 | 3.292 | 0.796 | 30.186 |
 | ICON* [[Xiu2022]](https://github.com/YuliangXiu/ICON)  | 2.256 | 2.795 |0.791 | 30.437 |
 | ECON* [[Xiu2023]](https://github.com/fengq1a0/FOF)   | 2.483 | 2.680 | 0.797 | 30.894 |
-| SiTH* (Ours) | **1.871** | **2.045** | **0.826** | ++37.029++ | 
+| SiTH* (Ours) | **1.871** | **2.045** | **0.826** | <ins>37.029</ins> | 
 
 * *indicates methods trained on the same THuman2.0 dataset.
 </details>
@@ -159,8 +159,8 @@ Note that we trained our models with 526 human scans provided in the [THuman2.0]
 | ------  | :----:  | :-----: | :----: | :----: |
 | Pix2PixHD [[Wang2018]](https://github.com/NVIDIA/pix2pixHD) |  0.816 | 0.141 | 86.2 | 53.1 |
 | DreamPose [[Karras2023]](https://github.com/johannakarras/DreamPose) |  0.844 | 0.132 | 86.7 | 76.7 |
-| Zero-1-to-3 [[Liu2023]](https://github.com/cvlab-columbia/zero123)  | ++0.862++ | ++0.119++ | ++30.0++ | 73.4 |
-| ControlNet [[Zhang2023]](https://github.com/lllyasviel/ControlNet-v1-1-nightly)   | 0.851 | 0.202 | 39.0 | ++35.7++ |
+| Zero-1-to-3 [[Liu2023]](https://github.com/cvlab-columbia/zero123)  | <ins>0.862</ins> | <ins>0.119</ins> | <ins>30.0</ins> | 73.4 |
+| ControlNet [[Zhang2023]](https://github.com/lllyasviel/ControlNet-v1-1-nightly)   | 0.851 | 0.202 | 39.0 | <ins>35.7</ins> |
 | SiTH  (Ours)  | **0.950** | **0.063** | **3.2** | **21.5** |
 
 </details>
