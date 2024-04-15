@@ -4,7 +4,7 @@
 
 <img src="assets/teaser.gif" width="800"/> 
 
-Official code release for CVPR 2024 paper [**SiTH**](https://ait.ethz.ch/sith).
+**Official code release for CVPR 2024 paper [SiTH](https://ait.ethz.ch/sith)**.
 
 
 What you can find in this repo:
@@ -18,7 +18,7 @@ If you find our code and paper useful, please cite it as
 ```
 @inproceedings{ho2024sith,
     title={SiTH: Single-view Textured Human Reconstruction with Image-Conditioned Diffusion},
-    author={Hsuan-I Ho and Jie Song and Otmar Hilliges},
+    author={Ho, Hsuan-I and Song, Jie and Hilliges, Otmar},
     booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
     year={2024}
   }
@@ -135,6 +135,37 @@ We created an evaluation benchmark using the [CustomHumans](https://custom-human
 
 Note that we trained our models with 526 human scans provided in the [THuman2.0](https://github.com/ytrock/THuman2.0-Dataset) dataset and tested on 60 scans in the [CustomHumans](https://custom-humans.github.io/#download) dataset. The evaluation script can be found [here](https://github.com/SiTH-Diffusion/SiTH/blob/main/tools/evaluate.py). We used the default hyperparameters and commands suggested in `run.sh`.
 
+<details><summary>Single-view human 3D reconstruction benchmark</summary>
+<br>
+    
+| Methods | P-to-S (cm) ↓ | S-to-P (cm) ↓ | NC ↑ | f-Score ↑ |
+| ------  | :----:  | :-----: | :----: | :----: |
+| PIFu [[Saito2019]](https://github.com/shunsukesaito/PIFu)   | 2.209 |  2.582  |  0.805  | 34.881 |
+| PIFuHD[[Saito2020]](https://github.com/facebookresearch/pifuhd)  | 2.107 |  ++2.228++  |  0.804  | **39.076** |
+| PaMIR [[Zheng2021]](https://github.com/ZhengZerong/PaMIR)  | 2.181 |  2.507 | ++0.813++ | 35.847 |
+| FOF [[Feng2022]](https://github.com/fengq1a0/FOF)   | ++2.079++ | 2.644 | 0.808 | 36.013 |
+| 2K2K [[Han2023]](https://github.com/SangHunHan92/2K2K) | 2.488 | 3.292 | 0.796 | 30.186 |
+| ICON* [[Xiu2022]](https://github.com/YuliangXiu/ICON)  | 2.256 | 2.795 |0.791 | 30.437 |
+| ECON* [[Xiu2023]](https://github.com/fengq1a0/FOF)   | 2.483 | 2.680 | 0.797 | 30.894 |
+| SiTH* (Ours) | **1.871** | **2.045** | **0.826** | ++37.029++ | 
+
+* *indicates methods trained on the same THuman2.0 dataset.
+</details>
+<br>
+<details><summary>Back-view hallucination benchmark</summary>
+<br> 
+
+| Methods | SSIM ↑ | LPIPS↓ | KID(×10^−3^) ↓ | Joints Err. (pixel) ↓ |
+| ------  | :----:  | :-----: | :----: | :----: |
+| Pix2PixHD [[Wang2018]](https://github.com/NVIDIA/pix2pixHD) |  0.816 | 0.141 | 86.2 | 53.1 |
+| DreamPose [[Karras2023]](https://github.com/johannakarras/DreamPose) |  0.844 | 0.132 | 86.7 | 76.7 |
+| Zero-1-to-3 [[Liu2023]](https://github.com/cvlab-columbia/zero123)  | ++0.862++ | ++0.119++ | ++30.0++ | 73.4 |
+| ControlNet [[Zhang2023]](https://github.com/lllyasviel/ControlNet-v1-1-nightly)   | 0.851 | 0.202 | 39.0 | ++35.7++ |
+| SiTH  (Ours)  | **0.950** | **0.063** | **3.2** | **21.5** |
+
+</details>
+
+
 ## Acknowledgement
 We used code from other great research work, including [occupancy_networks](https://github.com/autonomousvision/occupancy_networks),
 [pifuhd](https://github.com/facebookresearch/pifuhd), [kaolin-wisp](https://github.com/NVIDIAGameWorks/kaolin-wisp), [mmpose](https://github.com/open-mmlab/mmpose), [smplx](https://github.com/vchoutas/smplx), [SMPLer-X](https://github.com/caizhongang/SMPLer-X), [editable-humans](https://github.com/custom-humans/editable-humans).
@@ -142,3 +173,6 @@ We used code from other great research work, including [occupancy_networks](http
 We created all the videos using powerful [aitviewer](https://eth-ait.github.io/aitviewer/).
 
 We sincerely thank the authors for their awesome work!
+
+## Contact
+For any questions or problems, please open an issue or contact [Hsuan-I Ho](mailto:hohs@ethz.ch).
