@@ -121,19 +121,19 @@ data/examples
         ...
 ```
 
-The following command will reconstruct textured meshes under `data/example/meshes`:
+The following command will reconstruct textured meshes under `data/examples/meshes`:
 
 ```
-python reconstruct.py --test-folder data/example --config recon/config.yaml --resume checkpoints/recon_model.pth
+python reconstruct.py --test-folder data/examples --config recon/config.yaml --resume checkpoints/recon_model.pth
 ```
-The default `--grid_size` for marching cube is set to 512. If your images contain noisy segmentation borders, you can increase `--erode_iter` to shrink your segmentation mask. 
+The default `--grid-size` for marching cube is set to 512. If your images contain noisy segmentation borders, you can increase `--erode-iter` to shrink your segmentation mask. 
 
 
 ## Evaluation Benchmark
 
 We created an evaluation benchmark using the [CustomHumans](https://custom-humans.github.io/#download) dataset. Please apply the dataset directly and you will find the necessary files in the download link. 
 
-Note that we trained our models with 526 human scans provided in the [THuman2.0](https://github.com/ytrock/THuman2.0-Dataset) dataset and tested on 60 scans in the [CustomHumans](https://custom-humans.github.io/#download) dataset. We used the default hyperparameters and commands suggested in `run.sh`.
+Note that we trained our models with 526 human scans provided in the [THuman2.0](https://github.com/ytrock/THuman2.0-Dataset) dataset and tested on 60 scans in the [CustomHumans](https://custom-humans.github.io/#download) dataset. The evaluation script can be found [here](https://github.com/SiTH-Diffusion/SiTH/blob/main/tools/evaluate.py). We used the default hyperparameters and commands suggested in `run.sh`.
 
 ## Acknowledgement
 We used code from other great research work, including [occupancy_networks](https://github.com/autonomousvision/occupancy_networks),
