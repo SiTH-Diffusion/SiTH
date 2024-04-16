@@ -46,7 +46,7 @@ validation:
   valid_every: 50
   subdivide: True
   grid_size: 512
-  erode_iter: 1
+  erode_iter: 0
 
 wandb:
   wandb: False
