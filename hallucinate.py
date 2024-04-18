@@ -119,22 +119,22 @@ def main(args):
         images.append(tensor_to_np(data['tgt_uv']))
         fname = data['filename'][0]
 
+        with torch.autocast("cuda"):
+                im = pipeline.forward(data, num_inference_steps=args.num_inference_steps, generator=generator,
+                 guidance_scale=args.guidance_scale, controlnet_conditioning_scale=args.conditioning_scale,
+                 num_images_per_prompt = args.num_validation_images
+                )
         for j in range(args.num_validation_images):
 
-            with torch.autocast("cuda"):
-                image = pipeline.sample(data, num_inference_steps=args.num_inference_steps, generator=generator,
-                 guidance_scale=args.guidance_scale, controlnet_conditioning_scale=args.conditioning_scale
-                )
-            pil_img = Image.fromarray((image[0] * 255).astype(np.uint8))
+            pil_img = Image.fromarray((im[j] * 255).astype(np.uint8))
             pil_img.save(os.path.join(logging_dir,  f"%s_%03d.png" % (fname, j)))
             if j == 0:
                 pil_img.save(os.path.join(args.output_path,  f"%s_%03d.png" % (fname, j)))
 
-            images.append(image)
+            images.append(im[j:j+1])
 
         grid = image_grid(images, 1, args.num_validation_images +2 )
         grid.save(os.path.join(logging_dir, f"{fname}_all.png"))
-
 
 
 if __name__ == "__main__":
