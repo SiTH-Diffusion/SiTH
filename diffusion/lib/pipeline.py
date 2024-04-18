@@ -12,7 +12,14 @@ from diffusers.models import AutoencoderKL, ControlNetModel, UNet2DConditionMode
 from diffusers.schedulers import KarrasDiffusionSchedulers
 from diffusers.utils import (
     randn_tensor,
+    is_accelerate_available,
+    is_accelerate_version,
+    is_compiled_module,
+    logging,
+    randn_tensor,
+    replace_example_docstring,
 )
+
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.controlnet.multicontrolnet import MultiControlNetModel
 
@@ -82,6 +89,30 @@ class StableDiffusion3DControlNetPipeline(
 
         self.vae_scale_factor = 2 ** (len(self.vae.config.block_out_channels) - 1)
 
+
+    def enable_model_cpu_offload(self, gpu_id=0):
+        r"""
+        Offloads all models to CPU using accelerate, reducing memory usage with a low impact on performance. Compared
+        to `enable_sequential_cpu_offload`, this method moves one whole model at a time to the GPU when its `forward`
+        method is called, and the model remains in GPU until the next model runs. Memory savings are lower than with
+        `enable_sequential_cpu_offload`, but performance is much better due to the iterative execution of the `unet`.
+        """
+        if is_accelerate_available() and is_accelerate_version(">=", "0.17.0.dev0"):
+            from accelerate import cpu_offload_with_hook
+        else:
+            raise ImportError("`enable_model_cpu_offload` requires `accelerate v0.17.0` or higher.")
+
+        device = torch.device(f"cuda:{gpu_id}")
+
+        hook = None
+        for cpu_offloaded_model in [self.clip_image_encoder, self.unet, self.vae, self.refer_clip_proj]:
+            _, hook = cpu_offload_with_hook(cpu_offloaded_model, device, prev_module_hook=hook)
+
+        # control net hook has be manually offloaded as it alternates with unet
+        cpu_offload_with_hook(self.controlnet, device)
+
+        # We'll offload the last model manually.
+        self.final_offload_hook = hook
 
 
     # Copied from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline.decode_latents
@@ -200,7 +231,7 @@ class StableDiffusion3DControlNetPipeline(
                 negative_prompt_embeds = self.refer_clip_proj(last_hidden_states_norm.to(dtype=self.dtype))
             else:
                 negative_prompt_embeds = self.clip_image_encoder.visual_projection(last_hidden_states_norm)
-            negative_prompt_embeds =image_embeddings.repeat(1, num_images_per_prompt, 1)
+            negative_prompt_embeds = negative_prompt_embeds.repeat(1, num_images_per_prompt, 1)
             negative_prompt_embeds = negative_prompt_embeds.view(bs_embed * num_images_per_prompt, seq_len, -1)
             #negative_prompt_embeds = torch.zeros_like(image_embeddings)
             
@@ -232,7 +263,7 @@ class StableDiffusion3DControlNetPipeline(
 
     
     @torch.no_grad()
-    def sample(self, inputs, generator, num_inference_steps: int = 50, guidance_scale: float = 7.5,
+    def forward(self, inputs, generator, num_inference_steps: int = 50, guidance_scale: float = 7.5,
                   num_images_per_prompt: int = 1, controlnet_conditioning_scale= 1.0,
                   guess_mode: bool = False, control_guidance_start = 0.0, control_guidance_end= 1.0):
         
