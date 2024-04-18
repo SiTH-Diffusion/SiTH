@@ -64,53 +64,91 @@ def transfer(model, model_weights):
     return transfered_model_weights
 
 
-def draw_bodypose(canvas, candidate):
+def draw_bodypose(canvas, candidate, skeleton='COCO25'):
     H, W, C = canvas.shape
 
     point_2D = np.array(candidate)
 
-    stickwidth = 4
-
-    #limbSeq = [[2, 3], [2, 6], [3, 4], [4, 5], [6, 7], [7, 8], [2, 9], [9, 10], \
-    #           [10, 11], [2, 12], [12, 13], [13, 14], [2, 1], [1, 15], [15, 17], \
-    #           [1, 16], [16, 18], [3, 17], [6, 18]]
+    stickwidth = 3
     limbSeq = []
     colors = []
-    limbSeq += [[17, 15], [15,  0], [ 0, 16], [16, 18]]       # head
-    colors += [[153,  0,153], [153,  0,102], [102,  0,153], [ 51,  0,153]]
+    keypoints = []
+    if skeleton == 'COCO25':
 
-    limbSeq += [        
-        [ 0,  1], [ 1,  8],                                         # body
-        [ 1,  2], [ 2,  3], [ 3,  4],                               # right arm
-        [ 1,  5], [ 5,  6], [ 6,  7],                               # left arm
-        [ 8,  9], [ 9, 10], [10, 11], [11, 24], [11, 22], [22, 23], # right leg
-        [ 8, 12], [12, 13], [13, 14], [14, 21], [14, 19], [19, 20]  # left leg
-    ]
-    colors += [
-        [153,  0, 51], [153,  0,  0],
-        [153, 51,  0], [153,102,  0], [153,153,  0],
-        [102,153,  0], [ 51,153,  0], [  0,153,  0],
-        [  0,153, 51], [  0,153,102], [  0,153,153], [  0,153,153], [  0,153,153], [  0,153,153],
-        [  0,102,153], [  0, 51,153], [  0,  0,153], [  0,  0,153], [  0,  0,153], [  0,  0,153]
-    ]
+        limbSeq += [[17, 15], [15,  0], [ 0, 16], [16, 18]]       # head
+        colors += [[153,  0,153], [153,  0,102], [102,  0,153], [ 51,  0,153]]
 
-    #colors = [[255, 0, 0], [255, 85, 0], [255, 170, 0], [255, 255, 0], [170, 255, 0], [85, 255, 0], [0, 255, 0], \
-    #          [0, 255, 85], [0, 255, 170], [0, 255, 255], [0, 170, 255], [0, 85, 255], [0, 0, 255], [85, 0, 255], \
-    #          [170, 0, 255], [255, 0, 255], [255, 0, 170], [255, 0, 85]]
+        limbSeq += [        
+            [ 0,  1], [ 1,  8],                                         # body
+            [ 1,  2], [ 2,  3], [ 3,  4],                               # right arm
+            [ 1,  5], [ 5,  6], [ 6,  7],                               # left arm
+            [ 8,  9], [ 9, 10], [10, 11], [11, 24], [11, 22], [22, 23], # right leg
+            [ 8, 12], [12, 13], [13, 14], [14, 21], [14, 19], [19, 20]  # left leg
+        ]
+        colors += [
+            [153,  0, 51], [153,  0,  0],
+            [153, 51,  0], [153,102,  0], [153,153,  0],
+            [102,153,  0], [ 51,153,  0], [  0,153,  0],
+            [  0,153, 51], [  0,153,102], [  0,153,153], [  0,153,153], [  0,153,153], [  0,153,153],
+            [  0,102,153], [  0, 51,153], [  0,  0,153], [  0,  0,153], [  0,  0,153], [  0,  0,153]
+        ]
 
-    for bone, color in zip(limbSeq, colors):
-        if np.all(point_2D[bone, :2] > 0):
-            Y = point_2D[bone, 1]
-            X = point_2D[bone, 0]
-            mX = np.mean(X)
-            mY = np.mean(Y)
-            length = ((X[0] - X[1]) ** 2 + (Y[0] - Y[1]) ** 2) ** 0.5
-            angle = math.degrees(math.atan2(Y[0] - Y[1], X[0] - X[1]))
-            polygon = cv2.ellipse2Poly((int(mX), int(mY)), (int(length / 2), stickwidth), int(angle), 0, 360, 1)
-            if X[0] > 0 and X[1] > 0 and Y[0] > 0 and Y[1] > 0 and X[0] < W and X[1] < W and Y[0] < H and Y[1] < H:
-                cv2.fillConvexPoly(canvas, polygon, color)
-                cv2.circle(canvas, (int(X[0]), int(Y[0])), 4, color, thickness=-1)
-                cv2.circle(canvas, (int(X[1]), int(Y[1])), 4, color, thickness=-1)
+        for bone, color in zip(limbSeq, colors):
+            if np.all(point_2D[bone, :2] > 0):
+                Y = point_2D[bone, 1]
+                X = point_2D[bone, 0]
+                mX = np.mean(X)
+                mY = np.mean(Y)
+                length = ((X[0] - X[1]) ** 2 + (Y[0] - Y[1]) ** 2) ** 0.5
+                angle = math.degrees(math.atan2(Y[0] - Y[1], X[0] - X[1]))
+                polygon = cv2.ellipse2Poly((int(mX), int(mY)), (int(length / 2), stickwidth), int(angle), 0, 360, 1)
+                if X[0] > 0 and X[1] > 0 and Y[0] > 0 and Y[1] > 0 and X[0] < W and X[1] < W and Y[0] < H and Y[1] < H:
+                    cv2.fillConvexPoly(canvas, polygon, color)
+                    cv2.circle(canvas, (int(X[0]), int(Y[0])), 4, color, thickness=-1)
+                    cv2.circle(canvas, (int(X[1]), int(Y[1])), 4, color, thickness=-1)
+    else:
+        keypoints += [0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+
+        limbSeq += [[1, 2], [1, 5], [2, 3], [3, 4], [5, 6], [6, 7], [1, 9], [9, 10], \
+                    [10, 11], [1, 12], [12, 13], [13, 14], [1, 0], [0, 15], [15, 17], \
+                    [0, 16], [16, 18] ]
+
+        colors += [[255, 0, 0], [255, 85, 0], [255, 170, 0], [255, 255, 0], [170, 255, 0], [85, 255, 0], [0, 255, 0], \
+                  [0, 255, 85], [0, 255, 170], [0, 255, 255], [0, 170, 255], [0, 85, 255], [0, 0, 255], [85, 0, 255], \
+                  [170, 0, 255], [255, 0, 255], [255, 0, 170], [255, 0, 85]]
+
+        for bone, color in zip(limbSeq, colors):
+            if np.all(point_2D[bone, :2] > 0):
+                Y = point_2D[bone, 1]
+                X = point_2D[bone, 0]
+                mX = np.mean(X)
+                mY = np.mean(Y)
+                length = ((X[0] - X[1]) ** 2 + (Y[0] - Y[1]) ** 2) ** 0.5
+                angle = math.degrees(math.atan2(Y[0] - Y[1], X[0] - X[1]))
+                polygon = cv2.ellipse2Poly((int(mX), int(mY)), (int(length / 2), stickwidth), int(angle), 0, 360, 1)
+                if X[0] > 0 and X[1] > 0 and Y[0] > 0 and Y[1] > 0 and X[0] < W and X[1] < W and Y[0] < H and Y[1] < H:
+                    cv2.fillConvexPoly(canvas, polygon, [int(float(c) * 0.6) for c in color])
+
+        extend = [[11, 22], [14, 19]]
+        extend_colors = [[0, 255, 255], [0, 0, 255]]
+
+        for bone, color in zip(extend, extend_colors):
+            if np.all(point_2D[bone, :2] > 0):
+                Y = point_2D[bone, 1]
+                X = point_2D[bone, 0]
+                mX = np.mean(X)
+                mY = np.mean(Y)
+                length = ((X[0] - X[1]) ** 2 + (Y[0] - Y[1]) ** 2) ** 0.5
+                angle = math.degrees(math.atan2(Y[0] - Y[1], X[0] - X[1]))
+                polygon = cv2.ellipse2Poly((int(mX), int(mY)), (int(length / 2), stickwidth), int(angle), 0, 360, 1)
+                if X[0] > 0 and X[1] > 0 and Y[0] > 0 and Y[1] > 0 and X[0] < W and X[1] < W and Y[0] < H and Y[1] < H:
+                    cv2.fillConvexPoly(canvas, polygon, [int(float(c) * 0.6) for c in color])
+
+        for keypoint, color in zip (extend, extend_colors):
+
+            X, Y, C = point_2D[keypoint]
+            if X > 0 and Y > 0 and X < W and Y < H and C > 0:
+                cv2.circle(canvas, (int(X), int(Y)), 3, color, thickness=-1)
 
     return canvas
 
@@ -344,7 +382,7 @@ def load_openpose_json(json_path, thres=0.05):
 
     return res
 
-def draw_openpose_keypoints(joint_2d, canvas, height=1024, width=1024):
+def draw_openpose_keypoints(joint_2d, canvas, height=1024, width=1024, skeleton='COCO25'):
     '''
     joint_2d: torch.tensor, shape=(25+21*2+70, 3), 2d keypoints
     canvas: np.array, shape=(height, width, 3), image to draw keypoints
@@ -354,9 +392,10 @@ def draw_openpose_keypoints(joint_2d, canvas, height=1024, width=1024):
 
     jonts_image = (joint_2d[:, :2] * torch.tensor([1, -1], device=joint_2d.device)  + 1 ) * \
            torch.tensor([width//2, height//2], device=joint_2d.device)
+    jonts_image = torch.cat([jonts_image, joint_2d[:, 2:]], dim=-1)
 
-    jonts_numpy = jonts_image.detach().cpu().numpy()
-    draw_bodypose(canvas, jonts_numpy)
+    jonts_numpy = jonts_image.clone().detach().cpu().numpy()
+    draw_bodypose(canvas, jonts_numpy, skeleton)
     draw_handpose(canvas, jonts_numpy[25:25+21,:])
     draw_handpose(canvas, jonts_numpy[25+21:25+21*2,:])
     draw_facepose(canvas, jonts_numpy[25+21*2:,:])
