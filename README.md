@@ -133,7 +133,11 @@ The default `--grid-size` for marching cube is set to 512. If your images contai
 
 We created an evaluation benchmark using the [CustomHumans](https://custom-humans.github.io/#download) dataset. Please apply the dataset directly and you will find the necessary files in the download link. 
 
-Note that we trained our models with 526 human scans provided in the [THuman2.0](https://github.com/ytrock/THuman2.0-Dataset) dataset and tested on 60 scans in the [CustomHumans](https://custom-humans.github.io/#download) dataset. The evaluation script can be found [here](https://github.com/SiTH-Diffusion/SiTH/blob/main/tools/evaluate.py). We used the default hyperparameters and commands suggested in `run.sh`.
+Note that we trained our models with 526 human scans provided in the [THuman2.0](https://github.com/ytrock/THuman2.0-Dataset) dataset and tested on 60 scans in the [CustomHumans](https://custom-humans.github.io/#download) dataset. We used the default hyperparameters and commands suggested in `run.sh`. The evaluation script can be found [here](https://github.com/SiTH-Diffusion/SiTH/blob/main/tools/evaluate.py) and [here](https://github.com/SiTH-Diffusion/SiTH/blob/main/tools/evaluate_image.py). You will need to install two additional packages for evaluation:
+
+```
+pip install torchmetrics[image] mediapipe
+```
 
 <details><summary>Single-view human 3D reconstruction benchmark</summary>
 <br>
