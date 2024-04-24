@@ -1,9 +1,9 @@
-import os
-import logging as log
 import torch
 import torch.nn as nn
 import time
 import trimesh
+import os
+import logging as log
 
 from kaolin.ops.conversions import voxelgrids_to_trianglemeshes
 from kaolin.ops.mesh import subdivide_trianglemesh
@@ -55,7 +55,7 @@ class Evaluator(nn.Module):
         self.tex_model.to(self.device)
         
 
-    def test_reconstruction(self, data, save_path, subdivide=True):
+    def test_reconstruction(self, data, save_path, subdivide=True, chunk_size=1e5, flip=False):
 
         fname = data['fname'][0]
         log.info(f"Reconstructing mesh for {fname}...")
@@ -77,7 +77,7 @@ class Evaluator(nn.Module):
 
 
         # first estimate the sdf values
-        _points = torch.split(self.coord, int(5e5), dim=1)
+        _points = torch.split(self.coord, int(chunk_size), dim=1)
         voxels = []
         for _p in _points:
             pred_sdf = self.geo_model.compute_sdf(_p, front_feat, back_feat, smpl_v, vis_class)
@@ -94,7 +94,7 @@ class Evaluator(nn.Module):
             vertices, faces = subdivide_trianglemesh(vertices, faces, iterations=1)
 
         # Next estimate the texture rgb values on the surface
-        _points = torch.split(vertices, int(5e5), dim=1)
+        _points = torch.split(vertices, int(chunk_size), dim=1)
         front_feat, back_feat = self.tex_model.compute_feat_map(front_rgb_img, back_rgb_img)
         pred_rgb = []
         for _p in _points:
@@ -119,7 +119,19 @@ class Evaluator(nn.Module):
         h = max_comp
             
         trimesh.repair.fix_inversion(h)
-        h.export(os.path.join(save_path, '%s_reco.obj' % (fname)))
+        
+        if flip: # flip to the gradio coordinate system
+            h.apply_transform( [[-1, 0, 0, 0],
+                                [0, 1, 0, 0],
+                                 [0, 0, 1, 0],
+                                 [0, 0, 0, 1]] )
+            
+        
+        obj_path = os.path.join(save_path, '%s_reco.obj' % (fname))
+        h.export(obj_path)
         end = time.time()
-        log.info(f"Reconstruction finished in {end-start} seconds.")        
+        log.info(f"Reconstruction finished in {end-start} seconds.")
+        
+        return obj_path
+
 
