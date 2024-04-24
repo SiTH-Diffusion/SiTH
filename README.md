@@ -11,8 +11,8 @@ What you can find in this repo:
 * Demo for reconstructing a fully textured 3D human from a single image in 2 minutes (tested on an RTX 3090 GPU)
 * A minimal script for fitting the SMPL-X model to an image.
 * A new evaluation benchmark for single-view 3D human reconstruction.
+* A Gradio demo for creating 3D humans with poses and text prompts.
 - [ ] [TODO] Training scripts for the diffusion model and the mesh reconstruction model.
-- [ ] [TODO] A Gradio demo for creating 3D humans with text prompts.
 
 If you find our code and paper useful, please cite it as
 ```
@@ -25,6 +25,8 @@ If you find our code and paper useful, please cite it as
 ```
 
 ## News
+
+* [April 24, 2024] Gradio demo for 3D human creation is now available.
 * [April 15, 2024] Release demo code, models, and the evaluation benchmark.
 
 
@@ -64,6 +66,18 @@ body_models
 bash run.sh
 ```
 
+## Gradio Demo
+<img src="assets/sith_demo.gif" width="300"/> 
+
+We create an application combining SiTH and powerful [ControlNet](https://github.com/lllyasviel/ControlNet-v1-1-nightly) for 3D human creation. In the demo, users can easily create 3D humans with several button clicks. 
+
+You can either play our online demo or launch the web UI locally. To run the demo on your local machine, simply run
+```bash
+python app.py
+```
+You will see the following web UI on [http://127.0.0.1:7860/](http://127.0.0.1:7860/).
+
+<img src="assets/screenshot.png" width="800"/> 
 
 ## SiTH Pipeline
 
@@ -72,7 +86,7 @@ You can prepare your own **RGBA** images and put them into the `data/examples/rg
 
 1. Run the script to generate square and centralized input images into the `data/examples/images` folder. The default size is 1024x1024. You can also adjust the size by adjusting the `--size` and `--ratio` arguments. 
 
-```bas!
+```bash
 python tools/centralize_rgba.py
 ```
 
