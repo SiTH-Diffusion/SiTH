@@ -144,8 +144,7 @@ def draw_bodypose(canvas, candidate, skeleton='COCO25'):
                 if X[0] > 0 and X[1] > 0 and Y[0] > 0 and Y[1] > 0 and X[0] < W and X[1] < W and Y[0] < H and Y[1] < H:
                     cv2.fillConvexPoly(canvas, polygon, [int(float(c) * 0.6) for c in color])
 
-        for keypoint, color in zip (extend, extend_colors):
-
+        for keypoint, color in zip (keypoints, colors):
             X, Y, C = point_2D[keypoint]
             if X > 0 and Y > 0 and X < W and Y < H and C > 0:
                 cv2.circle(canvas, (int(X), int(Y)), 3, color, thickness=-1)
