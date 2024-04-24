@@ -1,6 +1,6 @@
 # SiTH: Single-view Textured Human Reconstruction with Image-Conditioned Diffusion
 
-## [Project Page](https://ait.ethz.ch/sith) | [Paper](https://arxiv.org/abs/2311.15855) | [Youtube(6min)](https://www.youtube.com/watch?v=gixakzI9UcM)  | [Online Demo](https://2cdb91212e463b76a2.gradio.live/)
+## [Project Page](https://ait.ethz.ch/sith) | [Paper](https://arxiv.org/abs/2311.15855) | [Youtube(6min)](https://www.youtube.com/watch?v=gixakzI9UcM)  | [Online Demo](https://ait.ethz.ch/sith-demo)
 
 <img src="assets/teaser.gif" width="800"/> 
 
@@ -71,7 +71,7 @@ bash run.sh
 
 We create an application combining SiTH and powerful [ControlNet](https://github.com/lllyasviel/ControlNet-v1-1-nightly) for 3D human creation. In the demo, users can easily create 3D humans with several button clicks. 
 
-You can either play our online demo or launch the web UI locally. To run the demo on your local machine, simply run
+You can either play our [Online Demo](https://ait.ethz.ch/sith-demo) or launch the web UI locally. To run the demo on your local machine, simply run
 ```bash
 python app.py
 ```
