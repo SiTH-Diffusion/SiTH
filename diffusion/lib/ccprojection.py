@@ -1,3 +1,7 @@
+"""
+Copyright (C) 2024  ETH Zurich, Hsuan-I Ho
+"""
+
 import torch
 from diffusers.configuration_utils import ConfigMixin
 from diffusers.models.modeling_utils import ModelMixin

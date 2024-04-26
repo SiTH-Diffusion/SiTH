@@ -1,5 +1,7 @@
 # Adapted from: https://github.com/caizhongang/SMPLer-X/blob/main/common/utils/transforms.py
-
+"""
+Copyright 2022 S-Lab
+"""
 import torch
 import numpy as np
 from torch.nn import functional as F

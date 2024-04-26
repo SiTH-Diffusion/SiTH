@@ -1,3 +1,7 @@
+"""
+Copyright (C) 2024  ETH Zurich, Hsuan-I Ho
+"""
+
 import os
 import numpy as np
 import PIL.Image as Image

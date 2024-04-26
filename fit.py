@@ -1,5 +1,8 @@
+"""
+Copyright (C) 2024  ETH Zurich, Hsuan-I Ho
+"""
+
 import os
-import re
 import cv2
 import argparse
 import trimesh

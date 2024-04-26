@@ -1,3 +1,7 @@
+"""
+Copyright (C) 2024  ETH Zurich, Hsuan-I Ho
+"""
+
 import logging as log
 import torch
 import torch.nn as nn

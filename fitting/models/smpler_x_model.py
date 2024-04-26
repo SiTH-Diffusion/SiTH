@@ -1,5 +1,7 @@
 # Adapted from https://github.com/caizhongang/SMPLer-X/blob/main/main/SMPLer_X.py
-
+"""
+Copyright 2022 S-Lab
+"""
 import torch
 import torch.nn as nn
 from torch.nn import functional as F

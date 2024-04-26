@@ -1,3 +1,6 @@
+"""
+Copyright (C) 2024  ETH Zurich, Hsuan-I Ho
+"""
 import gradio as gr
 from demo.gradio_func import (
     extract_openpose_keypoints,
