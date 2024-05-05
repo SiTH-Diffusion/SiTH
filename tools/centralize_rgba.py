@@ -1,7 +1,6 @@
 """
 Copyright (C) 2024  ETH Zurich, Hsuan-I Ho
 """
-
 import os
 import numpy as np
 import PIL.Image as Image
@@ -55,7 +54,7 @@ def main(args):
         canvas.save(os.path.join(args.output_path, os.path.basename(img_path)))
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Minimal code snippet to generate SMPL-X mesh from json file')
+    parser = argparse.ArgumentParser(description='Create a square images given RGBA images')
 
     parser.add_argument("-i", "--input-path", default='./data/examples/rgba', type=str, help="Input RGBA path")
     parser.add_argument("-o", "--output-path", default='./data/examples/images', type=str, help="Output path")

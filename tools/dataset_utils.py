@@ -1,5 +1,7 @@
+"""
+Copyright (C) 2024  ETH Zurich, Hsuan-I Ho
+"""
 import os
-import argparse
 import math
 import h5py
 import torch
