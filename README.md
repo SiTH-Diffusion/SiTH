@@ -1,6 +1,6 @@
 # SiTH: Single-view Textured Human Reconstruction with Image-Conditioned Diffusion
 
-## [Project Page](https://ait.ethz.ch/sith) | [Paper](https://arxiv.org/abs/2311.15855) | [Youtube(6min)](https://www.youtube.com/watch?v=gixakzI9UcM) | [Youtube Shorts(15s)](https://youtube.com/shorts/U5sL3zcSBK8?si=TRPosNAbqZz_oqjQ) | [Online Demo](https://ait.ethz.ch/sith-demo)
+## [Project Page](https://ait.ethz.ch/sith) | [Paper](https://arxiv.org/abs/2311.15855) | [Youtube(6min)](https://www.youtube.com/watch?v=gixakzI9UcM), [Shorts(15sec)](https://youtube.com/shorts/U5sL3zcSBK8?si=TRPosNAbqZz_oqjQ) | [Online Demo](https://ait.ethz.ch/sith-demo)
 
 <img src="assets/teaser.gif" width="800"/> 
 
