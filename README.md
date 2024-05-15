@@ -1,6 +1,6 @@
 # SiTH: Single-view Textured Human Reconstruction with Image-Conditioned Diffusion
 
-## [Project Page](https://ait.ethz.ch/sith) | [Paper](https://arxiv.org/abs/2311.15855) | [Youtube(6min)](https://www.youtube.com/watch?v=gixakzI9UcM)  | [Online Demo](https://ait.ethz.ch/sith-demo)
+## [Project Page](https://ait.ethz.ch/sith) | [Paper](https://arxiv.org/abs/2311.15855) | [Youtube(6min)](https://www.youtube.com/watch?v=gixakzI9UcM) | [Youtube Shorts(15s)](https://youtube.com/shorts/U5sL3zcSBK8?si=TRPosNAbqZz_oqjQ) | [Online Demo](https://ait.ethz.ch/sith-demo)
 
 <img src="assets/teaser.gif" width="800"/> 
 
@@ -78,6 +78,12 @@ python app.py
 You will see the following web UI on [http://127.0.0.1:7860/](http://127.0.0.1:7860/).
 
 <img src="assets/screenshot.png" width="800"/> 
+
+## 3D Avatars
+SiTH can be used for creating animatable 3D avatars from images. We fit and repose the reconstructed 3D meshes using [Editable-humans](https://github.com/custom-humans/editable-humans).
+Please check their [demo code](https://github.com/custom-humans/editable-humans/blob/main/demo.py) to see how to repose a 3D human mesh.
+
+![animation](https://github.com/SiTH-Diffusion/SiTH/assets/18035210/daeaf907-1459-4f51-8302-b4b5812e0414)
 
 ## SiTH Pipeline
 
@@ -182,7 +188,6 @@ pip install torchmetrics[image] mediapipe
 | SiTH  (Ours)  | **0.950** | **0.063** | **3.2** | **21.5** |
 
 </details>
-
 
 ## Acknowledgement
 We used code from other great research work, including [occupancy_networks](https://github.com/autonomousvision/occupancy_networks),
