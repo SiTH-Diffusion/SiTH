@@ -26,6 +26,7 @@ If you find our code and paper useful, please cite it as
 
 ## News
 
+* [May 15, 2024] Update an application of 3D avatar animation.
 * [April 24, 2024] Gradio demo for 3D human creation is now available.
 * [April 15, 2024] Release demo code, models, and the evaluation benchmark.
 
