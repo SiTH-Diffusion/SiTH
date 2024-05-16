@@ -81,7 +81,14 @@ You will see the following web UI on [http://127.0.0.1:7860/](http://127.0.0.1:7
 <img src="assets/screenshot.png" width="800"/> 
 
 ## 3D Avatars
-SiTH can be used for creating animatable 3D avatars from images. We fit and repose the reconstructed 3D meshes using [Editable-humans](https://github.com/custom-humans/editable-humans).
+SiTH can be used for creating animatable 3D avatars from images. You can generate a textured mesh with a UV map by modifying the command at [`run.sh`](https://github.com/SiTH-Diffusion/SiTH/blob/main/run.sh#L16) with
+
+```bash
+python reconstruct.py --test-folder data/examples --config recon/config.yaml --resume checkpoints/recon_model.pth --grid-size 300 --save-uv
+```
+⚠️ You need to install an additional package for UV unwrapping `pip install xatlas`. Note that UV unwrapping takes a long computational time (>10 mins per mesh). Therefore, it should be only used for the avatar animation application.
+
+We fit and repose the reconstructed textured meshes using [Editable-humans](https://github.com/custom-humans/editable-humans).
 Please check their [demo code](https://github.com/custom-humans/editable-humans/blob/main/demo.py) to see how to repose a 3D human mesh.
 
 ![animation](https://github.com/SiTH-Diffusion/SiTH/assets/18035210/daeaf907-1459-4f51-8302-b4b5812e0414)
