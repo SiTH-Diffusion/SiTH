@@ -2,7 +2,7 @@
 
 ## [Project Page](https://ait.ethz.ch/sith) | [Paper](https://arxiv.org/abs/2311.15855) | [Youtube(6min)](https://www.youtube.com/watch?v=gixakzI9UcM), [Shorts(15sec)](https://youtube.com/shorts/U5sL3zcSBK8?si=TRPosNAbqZz_oqjQ) | [Online Demo](https://ait.ethz.ch/sith-demo)
 
-<img src="assets/teaser.gif" width="800"/> 
+<img src="assets/teaser.gif"/> 
 
 **Official code release for CVPR 2024 paper [SiTH](https://ait.ethz.ch/sith)**.
 
@@ -91,7 +91,7 @@ python reconstruct.py --test-folder data/examples --config recon/config.yaml --r
 We fit and repose the reconstructed textured meshes using [Editable-humans](https://github.com/custom-humans/editable-humans).
 Please check their [demo code](https://github.com/custom-humans/editable-humans/blob/main/demo.py) to see how to repose a 3D human mesh.
 
-![animation](https://github.com/SiTH-Diffusion/SiTH/assets/18035210/daeaf907-1459-4f51-8302-b4b5812e0414)
+<img src="assets/animation.gif"/> 
 
 ## SiTH Pipeline
 
