@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -26,19 +24,14 @@ from diffusers.loaders import FromSingleFileMixin, LoraLoaderMixin, TextualInver
 from diffusers.models import AutoencoderKL, ControlNetModel, UNet2DConditionModel
 from diffusers.schedulers import KarrasDiffusionSchedulers
 from diffusers.utils import (
-    randn_tensor,
     is_accelerate_available,
     is_accelerate_version,
-    is_compiled_module,
-    logging,
-    randn_tensor,
-    replace_example_docstring,
 )
-
+from diffusers.utils.torch_utils import randn_tensor
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.controlnet.multicontrolnet import MultiControlNetModel
 
-class StableDiffusion3DControlNetPipeline(
+class BackHallucinationPipeline(
     DiffusionPipeline, TextualInversionLoaderMixin, LoraLoaderMixin, FromSingleFileMixin
 ):
     
@@ -88,8 +81,6 @@ class StableDiffusion3DControlNetPipeline(
         torch_dtype: torch.dtype = torch.float32,
     ):
         super().__init__()
-        self.dtype = torch_dtype
-        #self.refer_clip_proj = refer_clip_proj
         if isinstance(controlnet, (list, tuple)):
             controlnet = MultiControlNetModel(controlnet)
 
@@ -100,6 +91,7 @@ class StableDiffusion3DControlNetPipeline(
             controlnet=controlnet.cuda(),
             refer_clip_proj=refer_clip_proj.cuda(),
             scheduler=scheduler,
+            torch_dtype=torch_dtype,
         )
 
         self.vae_scale_factor = 2 ** (len(self.vae.config.block_out_channels) - 1)
@@ -151,7 +143,7 @@ class StableDiffusion3DControlNetPipeline(
         # encode images
         latents = self.vae.encode(images).latent_dist.sample()
         latents = latents * self.vae.config.scaling_factor
-        latents = latents.to(dtype=self.dtype)
+        latents = latents.to(dtype=self.torch_dtype)
 
         return latents
 
@@ -227,7 +219,7 @@ class StableDiffusion3DControlNetPipeline(
         last_hidden_states_norm = self.clip_image_encoder.vision_model.post_layernorm(last_hidden_states)
 
         if self.refer_clip_proj is not None:
-            image_embeddings = self.refer_clip_proj(last_hidden_states_norm.to(dtype=self.dtype))
+            image_embeddings = self.refer_clip_proj(last_hidden_states_norm.to(dtype=self.torch_dtype))
         else:
             image_embeddings = self.clip_image_encoder.visual_projection(last_hidden_states_norm)
         # image_embeddings = image_embeddings.unsqueeze(1)
@@ -243,7 +235,7 @@ class StableDiffusion3DControlNetPipeline(
             last_hidden_states = self.clip_image_encoder(image).last_hidden_state
             last_hidden_states_norm = self.clip_image_encoder.vision_model.post_layernorm(last_hidden_states)
             if self.refer_clip_proj is not None: # directly use clip pretrained projection layer
-                negative_prompt_embeds = self.refer_clip_proj(last_hidden_states_norm.to(dtype=self.dtype))
+                negative_prompt_embeds = self.refer_clip_proj(last_hidden_states_norm.to(dtype=self.torch_dtype))
             else:
                 negative_prompt_embeds = self.clip_image_encoder.visual_projection(last_hidden_states_norm)
             negative_prompt_embeds = negative_prompt_embeds.repeat(1, num_images_per_prompt, 1)
@@ -255,7 +247,7 @@ class StableDiffusion3DControlNetPipeline(
             # to avoid doing two forward passes
             image_embeddings = torch.cat([negative_prompt_embeds, image_embeddings])
 
-        return image_embeddings.to(dtype=self.dtype)
+        return image_embeddings.to(dtype=self.torch_dtype)
 
 
 
@@ -293,17 +285,17 @@ class StableDiffusion3DControlNetPipeline(
         # corresponds to doing no classifier free guidance.
         do_classifier_free_guidance = guidance_scale > 1.0
 
-        src_img = inputs['src_image'].to(device=device, dtype=self.dtype)
+        src_img = inputs['src_image'].to(device=device, dtype=self.torch_dtype)
         
         # prepare source embedding
         refer_latents = self.clip_encode_image_local(src_img,
                 num_images_per_prompt = num_images_per_prompt,
-                do_classifier_free_guidance=do_classifier_free_guidance).to(dtype=self.dtype)
+                do_classifier_free_guidance=do_classifier_free_guidance).to(dtype=self.torch_dtype)
 
         # prepare controlnet input
-        tgt_uv = inputs['tgt_uv'].to(device=device, dtype=self.dtype)
-        view_cond = inputs['view_cond'].to(device=device, dtype=self.dtype)
-        tgt_mask = inputs['tgt_mask'].to(device=device, dtype=self.dtype)
+        tgt_uv = inputs['tgt_uv'].to(device=device, dtype=self.torch_dtype)
+        view_cond = inputs['view_cond'].to(device=device, dtype=self.torch_dtype)
+        tgt_mask = inputs['tgt_mask'].to(device=device, dtype=self.torch_dtype)
 
         batch_size, _, height, width = inputs['tgt_uv'].shape
 
