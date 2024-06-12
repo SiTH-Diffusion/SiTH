@@ -1,0 +1,40 @@
+global:
+  pretrained_model_name_or_path: 'kxic/zero123-xl'
+  output_dir: '../checkpoints'
+  exp_name: 'train-hallucination'
+  seed: 2434
+
+dataset:
+  train_data_dir: '../data/dataset.h5'
+  test_data_dir: '../data/examples'
+  dataloader_num_workers: 4
+  resolution: 512
+  sample_random_views: False
+  white_background: False
+
+training:
+  train_batch_size: 4
+  num_train_epochs: 1000
+  checkpointing_steps: 2500
+
+validation:
+  validation: True
+  test: True
+  num_gen_images: 4
+  num_validation_images: 4
+  validation_steps: 1000
+  test_steps: 2500
+
+network:
+  drop_prob: 0.05
+  guidance_scale: 3.5
+  conditioning_scale: 1.0
+  conditioning_channels: 4
+
+optimizer:
+  lr: 0.000005
+  lr_controlnet: 0.00005
+  
+misc:
+  report_to: 'wandb'
+  
