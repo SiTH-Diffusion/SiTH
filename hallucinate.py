@@ -24,30 +24,13 @@ from diffusers.utils import check_min_version
 from diffusers.utils.import_utils import is_xformers_available
 
 from diffusion.lib.test_diffusion_dataset import TestDiffDataset
-from diffusion.lib.pipeline import StableDiffusion3DControlNetPipeline
+from diffusion.lib.pipeline import BackHallucinationPipeline
 from diffusion.lib.ccprojection import CCProjection
+from diffusion.lib.utils import tensor_to_np, image_grid
 
 # Will error if the minimal version of diffusers is not installed. Remove at your own risks.
-check_min_version("0.20.0")
+check_min_version("0.24.0")
 UV_TEMPLATE = 'data/smplx_uv.obj'
-
-def tensor_to_np(image):
-    image = (image / 2 + 0.5).clamp(0, 1)
-    # we always cast to float32 as this does not cause significant overhead and is compatible with bfloat16
-    image = image.cpu().permute(0, 2, 3, 1).float().numpy()
-    return image
-
-def image_grid(imgs, rows, cols):
-    assert len(imgs) == rows * cols
-
-    _, w, h, _ = imgs[0].shape
-    grid = Image.new("RGB", size=(cols * w, rows * h))
-
-    for i, img in enumerate(imgs):
-        pil_img = Image.fromarray((img[0] * 255).astype(np.uint8))
-        grid.paste(pil_img, box=(i % cols * w, i // cols * h))
-    return grid
-
 
 def main(args):
     
@@ -89,7 +72,7 @@ def main(args):
                         num_workers=0,
                         pin_memory=True)
 
-    pipeline = StableDiffusion3DControlNetPipeline(
+    pipeline = BackHallucinationPipeline(
         vae=vae,
         clip_image_encoder=clip_image_encoder,
         unet=unet,

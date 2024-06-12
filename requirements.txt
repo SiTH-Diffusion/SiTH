@@ -5,7 +5,7 @@ torchvision==0.16.0
 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.1.0_cu121.html
 kaolin==0.15.0
 
-diffusers==0.20.0
+diffusers==0.24.0
 accelerate
 transformers
 wandb
