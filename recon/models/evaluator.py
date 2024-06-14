@@ -1,3 +1,6 @@
+"""
+Copyright (C) 2024  ETH Zurich, Hsuan-I Ho
+"""
 import torch
 import torch.nn as nn
 import time

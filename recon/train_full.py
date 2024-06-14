@@ -1,3 +1,6 @@
+"""
+Copyright (C) 2024  ETH Zurich, Hsuan-I Ho
+"""
 import os, sys
 from datetime import datetime
 import logging as log
