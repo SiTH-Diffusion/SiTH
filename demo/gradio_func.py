@@ -35,7 +35,7 @@ from diffusers import (
     StableDiffusionControlNetPipeline
 )
 from recon.models.evaluator import Evaluator
-from diffusion.lib.pipeline import StableDiffusion3DControlNetPipeline
+from diffusion.lib.pipeline import BackHallucinationPipeline
 from diffusion.lib.ccprojection import CCProjection
 from fitting.utils.kps import draw_openpose_keypoints, vis_meshes
 
@@ -148,7 +148,7 @@ controlnet_ours = ControlNetModel.from_pretrained(model_name, subfolder="control
 refer_clip_proj = CCProjection.from_pretrained(model_name, subfolder="projection", clip_image_encoder=clip_image_encoder)
 
 
-pipeline = StableDiffusion3DControlNetPipeline(
+pipeline = BackHallucinationPipeline(
         vae=vae,
         clip_image_encoder=clip_image_encoder,
         unet=unet,
