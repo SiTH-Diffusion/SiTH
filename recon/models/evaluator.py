@@ -18,7 +18,7 @@ from .SMPL_query import SMPL_query
 
 class Evaluator(nn.Module):
 
-    def __init__(self, config, watertight, can_V):
+    def __init__(self, config, watertight, can_V, trainer=None):
 
         super().__init__()
 
@@ -41,24 +41,29 @@ class Evaluator(nn.Module):
                                 1, 2, 3, 0).reshape(1, -1, 3).contiguous()
 
         self.smpl_query = SMPL_query(watertight['smpl_F'], can_V)
-        self.nrm_predictor = define_G(3, 3, 64, "global", 4, 9, 1, 3, "instance")
 
-        self.geo_model = GeoModel(self.cfg, self.smpl_query)
-        self.tex_model = TexModel(self.cfg, self.smpl_query)
+        if trainer is None:
+            self.nrm_predictor = define_G(3, 3, 64, "global", 4, 9, 1, 3, "instance")
 
-        checkpoint = torch.load(self.cfg.resume, map_location=self.device)
+            self.geo_model = GeoModel(self.cfg, self.smpl_query)
+            self.tex_model = TexModel(self.cfg, self.smpl_query)
 
-        self.nrm_predictor.load_state_dict(checkpoint['nrm_encoder'])
-        self.geo_model.image_encoder.load_state_dict(checkpoint['image_encoder'])
-        self.geo_model.sdf_decoder.load_state_dict(checkpoint['sdf_decoder'])
+            checkpoint = torch.load(self.cfg.resume, map_location=self.device)
 
-        self.tex_model.image_encoder.load_state_dict(checkpoint['high_res_encoder'])
-        self.tex_model.rgb_decoder.load_state_dict(checkpoint['rgb_decoder'])
+            self.nrm_predictor.load_state_dict(checkpoint['nrm_encoder'])
+            self.geo_model.image_encoder.load_state_dict(checkpoint['image_encoder'])
+            self.geo_model.sdf_decoder.load_state_dict(checkpoint['sdf_decoder'])
 
-        self.nrm_predictor.to(self.device)
-        self.geo_model.to(self.device)
-        self.tex_model.to(self.device)
-        
+            self.tex_model.image_encoder.load_state_dict(checkpoint['high_res_encoder'])
+            self.tex_model.rgb_decoder.load_state_dict(checkpoint['rgb_decoder'])
+
+            self.nrm_predictor.to(self.device)
+            self.geo_model.to(self.device)
+            self.tex_model.to(self.device)
+        else:
+            self.nrm_predictor = trainer.nrm_predictor
+            self.geo_model = trainer.geo_model
+            self.tex_model = trainer.tex_model
 
     def _repair_mesh(self, mesh):
 

@@ -4,7 +4,7 @@ Copyright (C) 2024  ETH Zurich, Hsuan-I Ho
 
 import torch
 import torch.nn as nn
-from ..ops.mesh import *
+from .ops.mesh import *
 
 
 class SMPL_query(nn.Module):

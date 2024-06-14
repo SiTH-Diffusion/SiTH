@@ -1,9 +1,9 @@
 global:
-  save_root: './checkpoints'
-  exp_name: 'test-sith'
+  save_root: '../checkpoints'
+  exp_name: 'train-recon'
 
 dataset:
-  data_root: ''
+  data_root: '../data/dataset.h5'
   img_size: 1024
   num_samples: 20480
 
@@ -13,12 +13,16 @@ optimizer:
   beta1: 0.5
   beta2: 0.999
 
+scheduler:
+  lr_scheduler: 'constant_with_warmup'
+  lr_warmup_steps: 500
+
 train:
   epochs: 5000
   batch_size: 8
   workers: 8
   save_every: 50
-  log_every: 100
+  log_every: 500
 
 network:
   pos_dim: 8
@@ -31,18 +35,19 @@ network:
   activation: 'lrelu'
   layer_type: 'none'
 
-
 embedder:
   shape_freq: 0
   color_freq: 0
 
-
 losses:
-  lambda_sdf: 100.
-  lambda_rgb: 10.
-  lambda_nrm: 10.
+  lambda_sdf: 10.
+  lambda_rgb: 1.
+  lambda_nrm: 1.
+  lambda_2D: 1.
 
 validation:
+  valid: False
+  valid_folder: '../data/examples'
   valid_every: 50
   subdivide: True
   grid_size: 512
@@ -50,4 +55,4 @@ validation:
 
 wandb:
   wandb: False
-  wandb_name: 'SiTH'
+  wandb_name: 'train-recon'

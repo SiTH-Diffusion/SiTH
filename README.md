@@ -1,4 +1,6 @@
-# SiTH: Single-view Textured Human Reconstruction with Image-Conditioned Diffusion
+<center> <img src="https://files.ait.ethz.ch/projects/SiTH/sith.png" width=400/> </center>
+
+# <p align="center"> Single-view Textured Human Reconstruction with Image-Conditioned Diffusion </p>
 
 ## [Project Page](https://ait.ethz.ch/sith) | [Paper](https://arxiv.org/abs/2311.15855) | [Youtube(6min)](https://www.youtube.com/watch?v=gixakzI9UcM), [Shorts(15sec)](https://youtube.com/shorts/U5sL3zcSBK8?si=TRPosNAbqZz_oqjQ) | [Online Demo](https://ait.ethz.ch/sith-demo)
 
@@ -12,7 +14,7 @@ What you can find in this repo:
 * A minimal script for fitting the SMPL-X model to an image.
 * A new evaluation benchmark for single-view 3D human reconstruction.
 * A Gradio demo for creating 3D humans with poses and text prompts.
-- [ ] [TODO] Training scripts for the diffusion model and the mesh reconstruction model.
+* Training scripts for the diffusion model and the mesh reconstruction model.
 
 If you find our code and paper useful, please cite it as
 ```
@@ -25,7 +27,7 @@ If you find our code and paper useful, please cite it as
 ```
 
 ## News
-
+* [June 14, 2024] Release the training code for the diffusion model and the mesh reconstruction model. More instruction will be provided soon.
 * [May 15, 2024] Update an application of 3D avatar animation.
 * [April 24, 2024] Gradio demo for 3D human creation is now available.
 * [April 15, 2024] Release demo code, models, and the evaluation benchmark.
@@ -33,7 +35,7 @@ If you find our code and paper useful, please cite it as
 
 
 ## Installation
-Our code has been tested with PyTorch 2.1.0, CUDA 12.1, and an RTX 3090 GPU.
+Our code has been tested with Ubuntu 22.04, PyTorch 2.1.0, CUDA 12.1, and an RTX 3090 GPU.
 
 Simply run the following command to install relevant packages:
 
@@ -66,33 +68,6 @@ body_models
 ```bash
 bash run.sh
 ```
-
-## Gradio Demo
-<img src="assets/sith_demo.gif" width="300"/> 
-
-We create an application combining SiTH and powerful [ControlNet](https://github.com/lllyasviel/ControlNet-v1-1-nightly) for 3D human creation. In the demo, users can easily create 3D humans with several button clicks. 
-
-You can either play our [Online Demo](https://ait.ethz.ch/sith-demo) or launch the web UI locally. To run the demo on your local machine, simply run
-```bash
-python app.py
-```
-You will see the following web UI on [http://127.0.0.1:7860/](http://127.0.0.1:7860/).
-
-<img src="assets/screenshot.png" width="800"/> 
-
-## 3D Avatars
-SiTH can be used for creating animatable 3D avatars from images. You can generate a textured mesh with a UV map by modifying the command at [`run.sh`](https://github.com/SiTH-Diffusion/SiTH/blob/main/run.sh#L16) with
-
-```bash
-python reconstruct.py --test-folder data/examples --config recon/config.yaml --resume checkpoints/recon_model.pth --grid-size 300 --save-uv
-```
-⚠️ You need to install an additional package for UV unwrapping `pip install xatlas`. Note that UV unwrapping takes a long computational time (>10 mins per mesh). Therefore, it should be only used for the avatar animation application.
-
-We fit and repose the reconstructed textured meshes using [Editable-humans](https://github.com/custom-humans/editable-humans).
-Please check their [demo code](https://github.com/custom-humans/editable-humans/blob/main/demo.py) to see how to repose a 3D human mesh.
-
-<img src="assets/animation.gif"/> 
-
 ## SiTH Pipeline
 
 ### Data Preparation
@@ -152,9 +127,44 @@ data/examples
 The following command will reconstruct textured meshes under `data/examples/meshes`:
 
 ```
-python reconstruct.py --test-folder data/examples --config recon/config.yaml --resume checkpoints/recon_model.pth
+python reconstruct.py --test_folder data/examples --config recon/config.yaml --resume checkpoints/recon_model.pth
 ```
-The default `--grid-size` for marching cube is set to 512. If your images contain noisy segmentation borders, you can increase `--erode-iter` to shrink your segmentation mask. 
+The default `--grid_size` for marching cube is set to 512. If your images contain noisy segmentation borders, you can increase `--erode_iter` to shrink your segmentation mask. 
+
+## Training Models
+Please see TRAINING.md
+
+
+## Applications
+
+### Texts to 3D Humans
+<img src="assets/sith_demo.gif" width="300"/> 
+
+[Instruction Video](https://files.ait.ethz.ch/projects/SiTH/demo.mp4)
+
+We create an application combining SiTH and powerful [ControlNet](https://github.com/lllyasviel/ControlNet-v1-1-nightly) for 3D human creation. In the demo, users can easily create 3D humans with several button clicks. 
+
+You can either play our [Online Demo](https://ait.ethz.ch/sith-demo) or launch the web UI locally. To run the demo on your local machine, simply run
+```bash
+python app.py
+```
+You will see the following web UI on [http://127.0.0.1:7860/](http://127.0.0.1:7860/).
+
+<img src="assets/screenshot.png" width="800"/> 
+
+### Animation-ready Avatars
+SiTH can be used for creating animatable 3D avatars from images. You can generate a textured mesh with a UV map by modifying the command at [`run.sh`](https://github.com/SiTH-Diffusion/SiTH/blob/main/run.sh#L16) with
+
+```bash
+python reconstruct.py --test_folder data/examples --config recon/config.yaml --resume checkpoints/recon_model.pth --grid_size 300 --save_uv
+```
+⚠️ You need to install an additional package for UV unwrapping `pip install xatlas`. Note that UV unwrapping takes a long computational time (>10 mins per mesh). Therefore, it should be only used for the avatar animation application.
+
+We fit and repose the reconstructed textured meshes using [Editable-humans](https://github.com/custom-humans/editable-humans).
+Please check their [demo code](https://github.com/custom-humans/editable-humans/blob/main/demo.py) to see how to repose a 3D human mesh.
+
+<img src="assets/animation.gif"/> 
+
 
 
 ## Evaluation Benchmark

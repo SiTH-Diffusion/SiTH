@@ -13,4 +13,4 @@ python fit.py --opt_orient --opt_betas
 python hallucinate.py --num_validation_image 8
 
 # Step 3: Reconstruct textured 3D meshes, the result will be saved in data/examples/meshes
-python reconstruct.py --test-folder data/examples --config recon/config.yaml --resume checkpoints/recon_model.pth
+python reconstruct.py --test_folder data/examples --config recon/config.yaml --resume checkpoints/recon_model.pth

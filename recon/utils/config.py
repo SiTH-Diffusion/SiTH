@@ -14,13 +14,13 @@ def parse_options():
     global_group = parser.add_argument_group('global')
     global_group.add_argument('--config', type=str, default='config.yaml', 
                                help='Path to config file to replace defaults')
-    global_group.add_argument('--save-root', type=str, default='./checkpoints/', 
+    global_group.add_argument('--save_root', type=str, default='./checkpoints/', 
                                help="outputs path")
-    global_group.add_argument('--exp-name', type=str, default='test',
+    global_group.add_argument('--exp_name', type=str, default='test',
                                help="Experiment name.")
     global_group.add_argument('--seed', type=int, default=2434)
     global_group.add_argument('--resume', type=str, default=None,
-                                help='Resume from the checkpoint.')
+                                help='Resume from the checkpoint path.')
     global_group.add_argument(
         '--log_level', action='store', type=int, default=logging.INFO,
         help='Logging level to use globally, DEBUG: 10, INFO: 20, WARN: 30, ERROR: 40.')
@@ -29,27 +29,58 @@ def parse_options():
     # Arguments for dataset
     ###################
     data_group = parser.add_argument_group('dataset')
-    data_group.add_argument('--data-root', type=str, default='data',
+    data_group.add_argument('--data_root', type=str, default='',
                             help='Path to dataset')
-    data_group.add_argument('--num-samples', type=int, default=20480,
+    data_group.add_argument('--num_samples', type=int, default=20480,
                             help='Number of samples to use for each subject during training')
-    data_group.add_argument('--img-size', type=int, default=1024,
+    data_group.add_argument('--img_size', type=int, default=1024,
                             help='Image size for training')
+    data_group.add_argument("--white_bg", action="store_true", default=False,
+        help="Whether to use a white background for the training images. If False, a random background will be added.")
+    data_group.add_argument("--aug_jitter", action="store_true", default=False,
+                            help="Whetherto use data augmentation with jittering.")   
 
     ###################
     # Arguments for optimizer
     ###################
     optim_group = parser.add_argument_group('optimizer')
-    optim_group.add_argument('--lr-decoder', type=float, default=0.001,
+    optim_group.add_argument('--lr_decoder', type=float, default=0.001,
                              help='Learning rate for the decoder.')
-    optim_group.add_argument('--lr-encoder', type=float, default=0.0001,
+    optim_group.add_argument('--lr_encoder', type=float, default=0.0001,
                              help='Learning rate for the encoder.')
     optim_group.add_argument('--beta1', type=float, default=0.5,
                                 help='Beta1.')
     optim_group.add_argument('--beta2', type=float, default=0.999,
                                 help='Beta2.')
-    optim_group.add_argument('--weight-decay', type=float, default=0.0, 
+    optim_group.add_argument('--weight_decay', type=float, default=0.0, 
                              help='Weight decay.')
+
+    ###################
+    # Arguments for scheduler
+    ###################
+
+    scheduler_group = parser.add_argument_group('scheduler')
+
+    scheduler_group.add_argument(
+        "--lr_scheduler",
+        type=str,
+        default="constant_with_warmup",
+        help=(
+            'The scheduler type to use. Choose between ["linear", "cosine", "cosine_with_restarts", "polynomial",'
+            ' "constant", "constant_with_warmup"]'
+        ),
+    )
+    scheduler_group.add_argument(
+        "--lr_warmup_steps", type=int, default=500, help="Number of steps for the warmup in the lr scheduler."
+    )
+    scheduler_group.add_argument(
+        "--lr_num_cycles",
+        type=int,
+        default=1,
+        help="Number of hard resets of the lr in cosine_with_restarts scheduler.",
+    )
+    scheduler_group.add_argument("--lr_power", type=float, default=1.0, help="Power factor of the polynomial scheduler.")
+    scheduler_group.add_argument("--max_grad_norm", default=1.0, type=float, help="Max gradient norm.")
 
     ###################
     # Arguments for training
@@ -57,30 +88,30 @@ def parse_options():
     train_group = parser.add_argument_group('train')
     train_group.add_argument('--epochs', type=int, default=5000, 
                              help='Number of epochs to run the training.')
-    train_group.add_argument('--batch-size', type=int, default=8, 
+    train_group.add_argument('--batch_size', type=int, default=8, 
                              help='Batch size for the training.')
     train_group.add_argument('--workers', type=int, default=0,
                              help='Number of workers for the data loader. 0 means single process.')
-    train_group.add_argument('--save-every', type=int, default=50, 
+    train_group.add_argument('--save_every', type=int, default=50, 
                              help='Save the model at every N epoch.')
-    train_group.add_argument('--log-every', type=int, default=100,
+    train_group.add_argument('--log_every', type=int, default=100,
                              help='write logs to wandb at every N iters')
     
     ###################
     # Arguments for Network
     ###################
     net_group = parser.add_argument_group('network')
-    net_group.add_argument('--pos-dim', type=int, default=8,
+    net_group.add_argument('--pos_dim', type=int, default=8,
                           help='input position dimension')
-    net_group.add_argument('--feat-dim', type=int, default=16,
+    net_group.add_argument('--feat_dim', type=int, default=16,
                           help='image endoer feature dimension')
-    net_group.add_argument('--num-layers', type=int, default=8, 
+    net_group.add_argument('--num_layers', type=int, default=8, 
                              help='Number of layers for the MLPs.')
-    net_group.add_argument('--hidden-dim', type=int, default=256,
+    net_group.add_argument('--hidden_dim', type=int, default=256,
                           help='Network width')
     net_group.add_argument('--activation', type=str, default='relu',
                             choices=['relu', 'sin', 'softplus', 'lrelu'])
-    net_group.add_argument('--layer-type', type=str, default='none',
+    net_group.add_argument('--layer_type', type=str, default='none',
                             choices=['none', 'spectral_norm', 'frobenius_norm', 'l_1_norm', 'l_inf_norm'])
     net_group.add_argument('--skip', type=int, nargs='*', default=[2],
                           help='Layer to have skip connection.')
@@ -89,32 +120,45 @@ def parse_options():
     # Embedder arguments
     ###################
     embedder_group = parser.add_argument_group('embedder')
-    embedder_group.add_argument('--shape-freq', type=int, default=0,
+    embedder_group.add_argument('--shape_freq', type=int, default=0,
                                 help='log2 of max freq')
-    embedder_group.add_argument('--color-freq', type=int, default=0,
+    embedder_group.add_argument('--color_freq', type=int, default=0,
                                 help='log2 of max freq')
 
     ###################
     # Losses arguments
     ###################
-    embedder_group = parser.add_argument_group('losses')
-    embedder_group.add_argument('--lambda-sdf', type=float, default=10,
+    losses_group = parser.add_argument_group('losses')
+    losses_group.add_argument('--lambda_sdf', type=float, default=10,
                                 help='lambda for sdf loss')
-    embedder_group.add_argument('--lambda-rgb', type=float, default=10,
+    losses_group.add_argument('--lambda_rgb', type=float, default=10,
                                 help='lambda for rgb loss')
-    embedder_group.add_argument('--lambda-nrm', type=float, default=1,
+    losses_group.add_argument('--lambda_nrm', type=float, default=1,
                                 help='lambda for normal loss')
+    losses_group.add_argument('--lambda_2D', type=float, default=1,
+                                help='lambda for 2D normal loss')
+    losses_group.add_argument("--use_mask", action="store_true", default=False,
+                            help="Whether to use mask for the 2D normal loss.")
+    losses_group.add_argument("--use_pred_nrm", action="store_true", default=False,
+                            help="Whether to use predicted normal for reconstruction.")
+
    ###################
     # Arguments for validation
     ###################
     valid_group = parser.add_argument_group('validation')
-    valid_group.add_argument('--valid-every', type=int, default=50,
+    valid_group.add_argument("--valid", action="store_true", default=False,
+                            help="Whether to run validation.")
+    valid_group.add_argument('--valid_folder', type=str, default='',
+                             help='Path to the validation dataset')
+    valid_group.add_argument('--valid_every', type=int, default=50,
                              help='Frequency of running validation.')
+    valid_group.add_argument('--num_valid_samples', type=int, default=5,
+                                help='Number of samples to validate.')
     valid_group.add_argument('--subdivide', type=bool, default=True, 
                             help='Subdivide the mesh before marching cubes')
-    valid_group.add_argument('--grid-size', type=int, default=512, 
+    valid_group.add_argument('--grid_size', type=int, default=512, 
                             help='Grid size for marching cubes')
-    valid_group.add_argument('--erode-iter', type=int, default=0,
+    valid_group.add_argument('--erode_iter', type=int, default=0,
                             help='Number of iterations for mask erosion. 0 means no erosion.')
  
     ###################
@@ -122,11 +166,11 @@ def parse_options():
     ###################
     wandb_group = parser.add_argument_group('wandb')
     
-    wandb_group.add_argument('--wandb-id', type=str, default=None,
+    wandb_group.add_argument('--wandb_id', type=str, default=None,
                              help='wandb id')
     wandb_group.add_argument('--wandb', action='store_true',
                              help='Use wandb')
-    wandb_group.add_argument('--wandb-name', default='default', type=str,
+    wandb_group.add_argument('--wandb_name', default='default', type=str,
                              help='wandb_name')
 
     return parser

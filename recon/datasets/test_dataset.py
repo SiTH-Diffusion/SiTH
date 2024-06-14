@@ -13,7 +13,7 @@ import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
 
-from ..ops.mesh.load_obj import load_obj
+from .load_obj import load_obj
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 glctx = nvdiffrast.torch.RasterizeCudaContext(device=device)
