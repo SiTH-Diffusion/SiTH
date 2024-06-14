@@ -1,4 +1,4 @@
-<center> <img src="https://files.ait.ethz.ch/projects/SiTH/sith.png" width=400/> </center>
+<p align="center"> <img src="https://files.ait.ethz.ch/projects/SiTH/sith.png" width=400/> </p>
 
 # <p align="center"> Single-view Textured Human Reconstruction with Image-Conditioned Diffusion </p>
 
