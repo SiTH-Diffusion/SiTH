@@ -12,7 +12,7 @@ import kaolin as kal
 import PIL.Image as Image
 import numpy as np
 
-from recon.ops.mesh import load_obj, point_sample, closest_tex, per_face_normals, sample_tex
+from recon.models.ops.mesh import load_obj, point_sample, closest_tex, per_face_normals, sample_tex
 from .load_smplx_json import load_json
 
 ###################################################################

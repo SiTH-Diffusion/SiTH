@@ -15,7 +15,7 @@ from torch.utils.data import DataLoader
 from recon.models.evaluator import Evaluator
 from recon.utils.config import parse_options, argparse_to_str
 from recon.datasets.test_dataset import TestFolderDataset
-from recon.ops.mesh.load_obj import load_obj
+from recon.models.ops.mesh.load_obj import load_obj
 
 ####################################################
 CANONICAL_TEMPLATE = 'data/smplx_canonical.obj'
