@@ -30,7 +30,7 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output-path", default='data/dataset.h5', type=str, help="Output path")
     parser.add_argument("--size", default=1024, type=int, help="Image size")
 
-    parser.add_argument("--nsamples", default=1000000, type=int, help="Number of views to render")
+    parser.add_argument("--nsamples", default=1000000, type=int, help="Number of 3D points to sample")
     # Reduce the number samples if you don't have enough disk space, 1000000 points generates around 100GB of data
 
     parser.add_argument("--nviews", default=36, type=int, help="Number of views to render")
