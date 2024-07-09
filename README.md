@@ -103,7 +103,14 @@ Note that generative models do have randomness. Therefore multiple images are ge
 * `--guidance_scale`: Classifier-free guidance (CFG) scale.
 * `--conditioning_scale`: ControlNet conditioning scale.
 * `--num_inference_steps`: Denoising steps.
-* `--pretrained_model_name_or_path`: The default model is trained on 500 human scans. We offer a new model trained with 2000+ scans and more view angles. To use the model, please adjust to `hohs/SiTH-diffusion-2000`.
+* `--pretrained_model_name_or_path`: The default model is trained on 500 human scans. We offer several pretrained models below. Note that you also need to adjust the corresponding `--resolution`.
+
+| Link | Training samples | Resolution | Note |
+| :------: | :----:  | :-----: | :----: |
+| [hohs/SiTH_diffusion](https://huggingface.co/hohs/SiTH_diffusion) | 526 | 512 | CVPR paper benchmark. |
+| [hohs/SiTH-diffusion-2000](https://huggingface.co/hohs/SiTH-diffusion-2000) | 2000+ | 512 | Used in the gradio demo. |
+| [hohs/SiTH-diffusion-1K](https://huggingface.co/hohs/SiTH-diffusion-1K) | 4000+ | 1024 | New model to avido up-scaling artifacts. Reduce batch size to save VRAM.|
+
 
 ### Textured Human Reconstruction
 Before reconstructing the 3D meshes, make sure the following folders and images are ready.
@@ -136,8 +143,6 @@ The default `--grid_size` for marching cube is set to 512. If your images contai
 ### Texts to 3D Humans
 <img src="assets/sith_demo.gif" width="300"/> 
 
-[Instruction Video](https://files.ait.ethz.ch/projects/SiTH/demo.mp4)
-
 We create an application combining SiTH and powerful [ControlNet](https://github.com/lllyasviel/ControlNet-v1-1-nightly) for 3D human creation. In the demo, users can easily create 3D humans with several button clicks. 
 
 You can either play our [Online Demo](https://ait.ethz.ch/sith-demo) or launch the web UI locally. To run the demo on your local machine, simply run
@@ -146,7 +151,7 @@ python app.py
 ```
 You will see the following web UI on [http://127.0.0.1:7860/](http://127.0.0.1:7860/).
 
-<img src="assets/screenshot.png" width="800"/> 
+https://github.com/SiTH-Diffusion/SiTH/assets/18035210/9ec6660b-cc5c-430a-a90c-470191c875ad
 
 ### Animation-ready Avatars
 SiTH can be used for creating animatable 3D avatars from images. You can generate a textured mesh with a UV map by modifying the command at [`run.sh`](https://github.com/SiTH-Diffusion/SiTH/blob/main/run.sh#L16) with
@@ -158,6 +163,24 @@ python reconstruct.py --test_folder data/examples --config recon/config.yaml --r
 
 We fit and repose the reconstructed textured meshes using [Editable-humans](https://github.com/custom-humans/editable-humans).
 Please check their [demo code](https://github.com/custom-humans/editable-humans/blob/main/demo.py) to see how to repose a 3D human mesh.
+
+We also provide several recorded motion sequences with SMPL-X parameters for free. You can download the motion sequences from [here](https://files.ait.ethz.ch/projects/SiTH/motion.zip).
+
+<details><summary>See which dances are included:</summary>
+
+<a href="https://youtu.be/YMxQdHtQFGc" target="_blank">
+ <img src="http://img.youtube.com/vi/YMxQdHtQFGc/mqdefault.jpg" alt="Watch the video" width="600" />
+</a>
+    
+<a href="https://youtu.be/gEezSuPmzpQ" target="_blank">
+ <img src="http://img.youtube.com/vi/gEezSuPmzpQ/mqdefault.jpg" alt="Watch the video" width="600" />
+</a>
+    
+<a href="https://youtu.be/mLW35YMzELE" target="_blank">
+ <img src="http://img.youtube.com/vi/mLW35YMzELE/mqdefault.jpg" alt="Watch the video" width="600" />
+</a>
+    
+</details>
 
 <img src="assets/animation.gif"/> 
 
