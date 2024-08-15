@@ -55,8 +55,8 @@ if __name__ == "__main__":
 
     parser = parse_options()
 
-    parser.add_argument('--test-folder', type=str, required=True, help='saving directory')
-    parser.add_argument('--save-uv', action='store_true', help='save texture meshes with uv')
+    parser.add_argument('--test_folder', type=str, required=True, help='saving directory')
+    parser.add_argument('--save_uv', action='store_true', help='save texture meshes with uv')
 
     args, args_str = argparse_to_str(parser)
     handlers = [log.StreamHandler(sys.stdout)]
